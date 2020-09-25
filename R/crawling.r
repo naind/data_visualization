@@ -2,14 +2,15 @@
 # install.packages('stringr')
 # install.packages('httr')
 # install.packages("XML", type = "binary")
+# install.packages("rjson")
 
 
-# library(httr)
-# library(rvest)
-# library(dplyr)
-# library(stringr)
-
-
+library(httr)
+library(rvest)
+library(dplyr)
+library(stringr)
+library(rjson)
+library(jsonlite)
 
 kdate_list = character()
 kconc_list = numeric()   # Conclusion price
@@ -43,7 +44,8 @@ for(page_url in 1:30){
   kdate_list <- append(kdate_list, date)
   kconc_list <- append(kconc_list, conc)
   kfluc_list <- append(kfluc_list, fluc)
-
+  kdate_list
+ 
 }    
 
 # SAMSUNG
@@ -66,10 +68,14 @@ for(page_url in 1:3){
 
 
 
-
+# matrix()
+# kospi <- data.frame(kconc_list, kfluc_list, row.names = kdate_list)
 kospi <- data.frame(kdate_list, kconc_list, kfluc_list)
-samsung <- data.frame(sdate_list, sconc_list, sfluc_list)
+samsung <- data.frame(sconc_list, sfluc_list)
 
+
+# kospi_json <- toJSON(kospi, pretty = T)
+# kospi_json
 if(nrow(kospi) < nrow(samsung)){
   samsung <- na.omit(samsung[-c(nrow(kospi)+1:nrow(samsung)), ])  
 }else{
@@ -77,5 +83,32 @@ if(nrow(kospi) < nrow(samsung)){
 }
 
 
-df <- cbind(kospi, samsung)
-write.csv(df, "R/kospi.csv", row.names = TRUE)   # .csv file
+
+
+
+
+
+
+# df <- data.frame(kospi, samsung)
+# df
+# kospi
+# samsung
+# # kconc_list ~ kfluc_list ~ sconc_list ~ sfluc_list
+# # kdate_list kconc_list kfluc_list sdate_list sconc_list sfluc_list
+# df <- cbind(kospi, samsung)
+# df
+# df2 <- aggregate(. ~ kdate_list,kospi,list)
+# 
+# json_ <-toJSON(df, pretty = T)
+# json_
+# test_list <- json_
+# df2 <- data.frame(sdate_list, test_list)
+# #write.csv(df, "R/kospi.csv", row.names = TRUE)   # .csv file
+# 
+# df3 <- fromJSON(file="data_full.json")
+# df3
+# 
+# write.csv(df3, "full.csv")
+# exportjson <- toJSON(df2)
+# write(exportjson, file='R/date.json')
+# 
