@@ -35,16 +35,37 @@ d3.csv("data/data01.csv",type,function(error, data) {
             };
         });
 
-    var n = 30,
-        duration = 750,
+        var num = 0;
+        var MM = device[0].values[num].date.getMonth() ;
+        var DD = device[0].values[num].date.getDate() ;
+        var HH = device[0].values[num].date.getHours() ;
+        var SS = device[0].values[num].date.getSeconds();
+
+        var MM3 = device[0].values[num+30].date.getMonth() ;
+        var DD3 = device[0].values[num+30].date.getDate() ;
+        var HH3 = device[0].values[num+30].date.getHours() ;
+        var SS3 = device[0].values[num+30].date.getSeconds();
+        // console.log(count);
+        // console.log("num:"+num)
+        // console.log(nn)
+        // console.log(nn3)
+
+
+        var nn = new Date(2020, MM, DD, HH, SS);
+        var nn3 = new Date(2020, MM3, DD3, HH3, SS3);
+
+
+
+    var n = 240,
+        duration = 10800,
         count = 0,
         ydata = d3.range(n).map(function(){return {x:0,y:0}});
-        for (var i=0;i<n;i++){
-
-          ydata[i].x = new Date( device[0].values[i].date );
-          // console.log( new Date( device[0].values[i].date  ) );
-          // console.log(ydata[i].x);
-        }
+        // for (var i=0;i<n;i++){
+        //
+        //   ydata[i].x = new Date( device[0].values[i].date );
+        //   // console.log( new Date( device[0].values[i].date  ) );
+        //   // console.log(ydata[i].x);
+        // }
         // console.log(ydata);
         // console.log(device);
     // var min = device[0].values[0].date;
@@ -53,23 +74,33 @@ d3.csv("data/data01.csv",type,function(error, data) {
         // console.log(new Date(device[0].values[0].date-2592E+6));
     // console.log(d3.min(data,function(d){return d.date.setDate(getDate()+30)}));
     // console.log(min);
-    // console.log(data);
+    // console.log(data[0].date);
     // console.log(new Date(min.setDate(min.getDate()-30)));
     // console.log(d3.extent(data, function(d) { return d.date; }));
     // console.log(d3.extent([ d3.min(data,function(d){return d.date}) ]));
     // console.log(new Date(device[0].values[0].date));   // 5/19
     // console.log(new Date( device[0].values[30].date ));  // 5/18
     // console.log(new Date( device[0].values[0].date));
+    var n0 = duration * n;
+    var n1 = 3;
+// console.log( new Date(device[0].values[0].date ));
+// console.log(d3.min(data, function(d){ return d.date } ));
+
+// var time = d3.min(data, function(d){return d.date});
+// console.log(time);
+// console.log(d3.min(data, function(d){return d.date}));
+
 
 var x = d3.scaleTime()
-        // .domain(d3.extent(data, function(d) { return d.date; }))  // extent data내 최소,최댓값을 x축에 그림
+        // .domain([new Date(device[0].values[30].date - (n-2) * duration), new Date( device[0].values[30].date - duration)])  // extent data내 최소,최댓값을 x축에 그림
+        // new Date(device[0].values[0].date +(n-1+count)*duration), new Date( device[0].values[30].date + count * duration)
         .domain([new Date(device[0].values[0].date), new Date( device[0].values[30].date)]  )  //  오래된 날짜를 기준으로, 30일전부터 기준날짜까지
         .range([0, width]);
 
 
 
     var y = d3.scaleLinear()
-        .domain([-0.5,0.5])
+        .domain([-0.3,0.3])
         .range([height, 0]);
 
     var z = d3.scaleOrdinal(d3.schemeCategory10)
@@ -134,7 +165,7 @@ var axis = g.append("g")
         .datum(ydata)
         .attr("class","line")
         .transition()
-        .duration(750)
+        .duration(200)
         .ease(d3.easeLinear)
         .on("start",tick);
 
@@ -187,13 +218,71 @@ var axis = g.append("g")
 //
 // }
 
+var check = device[0].values[0].date;
+
+var num = 0;
+var MM = device[0].values[num].date.getMonth() ;
+var DD = device[0].values[num].date.getDate() ;
+var HH = device[0].values[num].date.getHours() ;
+var SS = device[0].values[num].date.getSeconds();
+
+var MM3 = device[0].values[num+30].date.getMonth() ;
+var DD3 = device[0].values[num+30].date.getDate() ;
+var HH3 = device[0].values[num+30].date.getHours() ;
+var SS3 = device[0].values[num+30].date.getSeconds();
+// console.log(count);
+// console.log("num:"+num)
+// console.log(nn)
+// console.log(nn3)
+
+var temp =0;
+var temp0 =0;
+var nn = new Date(2020, MM, DD, HH, SS);
+var nn3 = new Date(2020, MM3, DD3, HH3, SS3);
+
+
+// console.log(check);
+
+// console.log(nn);
+// console.log(nn3);
+
+// console.log(new Date(nn+ duration));
+// console.log( new Date(device[0].values[0].date.setSeconds(nn.getSeconds() + duration ))) ;
+// console.log(nn);
+
 function tick(){
 
-    // console.log(new Date(device[0].values[count].date));
-    // console.log(device[0].values[count+30].date);
-    x.domain([new Date(device[0].values[count].date), new Date( device[0].values[count+30].date)]);
-    // y.domain([0,(d3.max(data) ? d3.max(data):1)]);
 
+
+    num += (count%8 == 0)? 1: 0;
+    if (count%8 == 0){
+      MM = device[0].values[num].date.getMonth() ;
+      DD = device[0].values[num].date.getDate() ;
+      HH = device[0].values[num].date.getHours() ;
+      SS = device[0].values[num].date.getSeconds();
+
+      MM3 = device[0].values[num+30].date.getMonth() ;
+      DD3 = device[0].values[num+30].date.getDate() ;
+      HH3 = device[0].values[num+30].date.getHours() ;
+      SS3 = device[0].values[num+30].date.getSeconds();
+      // console.log(count);
+      // console.log("num:"+num)
+      // console.log(nn)
+      // console.log(nn3)
+
+
+      nn = new Date(2020, MM, DD, HH, SS);
+      nn3 = new Date(2020, MM3, DD3, HH3, SS3);
+
+
+    };
+
+    x.domain([temp =new Date(nn.setSeconds(nn.getSeconds()+ duration)), temp0 = new Date(nn3.setSeconds(nn3.getSeconds()+ duration)) ]);
+
+
+console.log(temp);
+// console.log(temp0);
+// console.log(count);
 
 
     d3.select(this)
@@ -203,18 +292,28 @@ function tick(){
 
 
     axis.transition()
-        .duration(750)
+        .duration(200)
         .ease(d3.easeLinear)
         .call(x.axis);
 
-        console.log(ydata);
-      ydata.push({x:data[count+30].date,y:data[count+30].samsung})
+if ( count <= 120){
+  ydata.push({x:data[count].date,y:data[count].samsung})
+}
+
+        // console.log(ydata);
+    //   if (count >= 121){
+    //
+    //   ydata.push({x:0,y:0})
+    // }else {
+    //   ydata.push({x:data[count].date,y:data[count].samsung})
+    // }
+
 
 
 
     // console.log(ydata);
-    // console.log(count_);
-    count = count < 59? ++count:count=0;
+
+    count = count < 199? ++count:count=0;
     // console.log(count);
     // console.log(data[count].date);
     // console.log(data[count]);
@@ -226,11 +325,14 @@ function tick(){
     //     .call(y.axis);
 
     d3.active(this)
-        .attr("transform","translate("+(x(device[0].values[0].date))+")")
+        // .attr("transform","translate("+( x(nn.setSeconds(nn.getSeconds()+ duration)) )+")")
         .transition()
         .on("start",tick);
 
+if ( count <= 120){
     ydata.shift();
+  }
+
 };
 
 
