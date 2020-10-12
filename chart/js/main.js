@@ -24,12 +24,11 @@ var count_ = 0;
 d3.csv("data/data01.csv",type,function(error, data) {
     if (error) throw error;
 
-    // console.log(data);
+
     var device = data.columns.slice(1).map(function(id) {  // close 부터 id 추출
         return {
             id: id,
             values: data.map(function(d) {
-              // console.log(d.date);
                 return {date: d.date, rate: d[id]};
                 })
             };
@@ -45,50 +44,15 @@ d3.csv("data/data01.csv",type,function(error, data) {
         var DD3 = device[0].values[num+30].date.getDate() ;
         var HH3 = device[0].values[num+30].date.getHours() ;
         var SS3 = device[0].values[num+30].date.getSeconds();
-        // console.log(count);
-        // console.log("num:"+num)
-        // console.log(nn)
-        // console.log(nn3)
 
 
         var nn = new Date(2020, MM, DD, HH, SS);
         var nn3 = new Date(2020, MM3, DD3, HH3, SS3);
 
-
-
     var n = 240,
         duration = 10800,
         count = 0,
         ydata = d3.range(n).map(function(){return {x:0,y:0}});
-        // for (var i=0;i<n;i++){
-        //
-        //   ydata[i].x = new Date( device[0].values[i].date );
-        //   // console.log( new Date( device[0].values[i].date  ) );
-        //   // console.log(ydata[i].x);
-        // }
-        // console.log(ydata);
-        // console.log(device);
-    // var min = device[0].values[0].date;
-        // console.log(min);
-        // console.log(device);
-        // console.log(new Date(device[0].values[0].date-2592E+6));
-    // console.log(d3.min(data,function(d){return d.date.setDate(getDate()+30)}));
-    // console.log(min);
-    // console.log(data[0].date);
-    // console.log(new Date(min.setDate(min.getDate()-30)));
-    // console.log(d3.extent(data, function(d) { return d.date; }));
-    // console.log(d3.extent([ d3.min(data,function(d){return d.date}) ]));
-    // console.log(new Date(device[0].values[0].date));   // 5/19
-    // console.log(new Date( device[0].values[30].date ));  // 5/18
-    // console.log(new Date( device[0].values[0].date));
-    var n0 = duration * n;
-    var n1 = 3;
-// console.log( new Date(device[0].values[0].date ));
-// console.log(d3.min(data, function(d){ return d.date } ));
-
-// var time = d3.min(data, function(d){return d.date});
-// console.log(time);
-// console.log(d3.min(data, function(d){return d.date}));
 
 
 var x = d3.scaleTime()
@@ -121,35 +85,39 @@ var x = d3.scaleTime()
               // console.log((d.y*100).toFixed(0));
               // console.log(y(d.y));
               // console.log(d.y);
-              return y(d.y) });
+              return y(d.y+0.004) });
 // toFixed(1)
 
 // X, Y축, 중간라인 설정
 var axis = g.append("g")
-        .attr("class","x axis")
+        .attr("class","grid")
         .attr("transform", "translate(0," + height + ")")
-        .call(x.axis = d3.axisBottom(x));
+        .call(x.axis = d3.axisBottom(x)
+                  .tickSize(-height));
 
     g.append("g")
-        .attr("class", "y axis")
+        .attr("class", "grid")
         .call(d3.axisLeft(y)
+                .tickSize(-width)
                 .tickFormat(formatPercent)
               )
         .append("text")
         .attr("transform", "rotate(-90)")
+        .attr("x", 15)
         .attr("y", 6)
         .attr("dy", "0.71em")
         .attr("fill", "#000")
         .text("rate %")
-        .style("font","13px sans-serif");
+        .style("font","13px sans-serif")
+        .style("fill","white");
 
-    // g.append("g")
-    //     .append("rect")
-    //     .attr("width",width)
-    //     .attr("height",1)
-    //     .attr("y",height/2)
-    //     .style("opacity",0.3);
-    //     // .attr("x",)
+    g.append("g")
+        .append("rect")
+        .attr("width",width)
+        .attr("height",1)
+        .attr("y",height/2)
+        .style("opacity",0.3);
+        // .attr("x",)
 
 
     g.append("defs").append("clipPath")
@@ -165,7 +133,7 @@ var axis = g.append("g")
         .datum(ydata)
         .attr("class","line")
         .transition()
-        .duration(200)
+        .duration(100)
         .ease(d3.easeLinear)
         .on("start",tick);
 
@@ -173,24 +141,24 @@ var axis = g.append("g")
 
 
 //라인, 텍스트 설정
-    // var etc = g.selectAll(".etc")
-    //     .data(device)
-    //     .enter()
-    //     .append("g")
-    //     .attr("class", "etc");
-    //
-    // etc.append("path")
-    //     .attr("class", "line")
-    //     .attr("d", function(d) { return line(d.values); })
-    //     .style("stroke", function(d) { return z(d.id); });
-    //
-    // etc.append("text")
-    //     .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
-    //     .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.rate) + ")"; })
-    //     .attr("x", 3)
-    //     .attr("dy", "0.35em")
-    //     .style("font", "13px sans-serif")
-    //     .text(function(d) { return d.id; });
+    var etc = g.selectAll(".etc")
+        .data(device)
+        .enter()
+        .append("g")
+        .attr("class", "etc");
+
+    etc.append("path")
+        .attr("class", "line")
+        .attr("d", function(d) { return line(d.values ); })
+        .style("stroke", function(d) { return z(d.id); });
+
+    etc.append("text")
+        .datum(function(d) { return {id: d.id, value: d.values[d.values.length - 1]}; })
+        .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.rate) + ")"; })
+        .attr("x", 3)
+        .attr("dy", "0.35em")
+        .style("font", "13px sans-serif")
+        .text(function(d) { return d.id; });
     //
     //
     // var timeLabel = etc.append("text")
@@ -209,14 +177,7 @@ var axis = g.append("g")
     //       // console.log(d.values[i]);
     //       return d.values.date.getFullYear()});
 
-// function update(data){
-//
-//     var t = d3.transition()
-//         .duration(750);
-//
-//
-//
-// }
+
 
 var check = device[0].values[0].date;
 
@@ -261,14 +222,13 @@ function tick(){
       HH = device[0].values[num].date.getHours() ;
       SS = device[0].values[num].date.getSeconds();
 
-      MM3 = device[0].values[num+30].date.getMonth() ;
-      DD3 = device[0].values[num+30].date.getDate() ;
-      HH3 = device[0].values[num+30].date.getHours() ;
-      SS3 = device[0].values[num+30].date.getSeconds();
+      MM3 = device[0].values[num+29].date.getMonth() ;
+      DD3 = device[0].values[num+29].date.getDate() ;
+      HH3 = device[0].values[num+29].date.getHours() ;
+      SS3 = device[0].values[num+29].date.getSeconds();
       // console.log(count);
       // console.log("num:"+num)
-      // console.log(nn)
-      // console.log(nn3)
+
 
 
       nn = new Date(2020, MM, DD, HH, SS);
@@ -280,7 +240,7 @@ function tick(){
     x.domain([temp =new Date(nn.setSeconds(nn.getSeconds()+ duration)), temp0 = new Date(nn3.setSeconds(nn3.getSeconds()+ duration)) ]);
 
 
-console.log(temp);
+// console.log(temp);
 // console.log(temp0);
 // console.log(count);
 
@@ -288,17 +248,33 @@ console.log(temp);
     d3.select(this)
         .attr("d",line)
         .attr("transform",null)
-        .style("stroke", function(d) { return z(d.id); });;
+        // .style("stroke", function(d) { return z(d.id); });
+        // .style("stroke", function(d) { return z(d.id); });
 
 
     axis.transition()
-        .duration(200)
+        .duration(100)
         .ease(d3.easeLinear)
         .call(x.axis);
 
-if ( count <= 120){
-  ydata.push({x:data[count].date,y:data[count].samsung})
+// console.log(parseInt(count/8));
+// var k = parseInt(count/8);
+// console.log(i);
+if (count > 7 ){
+
+  ydata.push({x: temp0 ,y:data[parseInt((count+1)/8)+30].samsung})
+} else if( count == 7){
+  ydata.push({x: temp0 ,y:data[31].samsung})
+} else {
+  ydata.push({x: temp0 ,y:data[30].samsung})
 }
+
+
+  // console.log(nn)
+  // console.log(nn3)
+
+
+// console.log(data[parseInt(count/8)].samsung);
 
         // console.log(ydata);
     //   if (count >= 121){
@@ -312,8 +288,8 @@ if ( count <= 120){
 
 
     // console.log(ydata);
+    if (count < 728){ ++count };
 
-    count = count < 199? ++count:count=0;
     // console.log(count);
     // console.log(data[count].date);
     // console.log(data[count]);
@@ -329,9 +305,8 @@ if ( count <= 120){
         .transition()
         .on("start",tick);
 
-if ( count <= 120){
+
     ydata.shift();
-  }
 
 };
 

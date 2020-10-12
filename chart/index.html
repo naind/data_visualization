@@ -9,8 +9,21 @@
 
 .line {
   fill: none;
-  stroke: #000;
+  stroke: #40FF00;
   stroke-width: 1.5px;
+}
+
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.3;
+}
+
+.grid path {
+    stroke: white;
+}
+
+.grid text{
+    fill: white;
 }
 
 </style>
@@ -21,7 +34,7 @@
 </head>
 
 
-<body>
+<body bgcolor="black">
 
   <svg width="960" height="500"></svg>
   <script src="js/d3.min.js"></script>
